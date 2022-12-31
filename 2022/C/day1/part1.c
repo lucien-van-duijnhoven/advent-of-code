@@ -72,32 +72,6 @@ enum SEARCH_MODES
     FINDING
 };
 
-int top1 = 0;
-int top2 = 0;
-int top3 = 0;
-
-void setHighestThree(int number)
-{
-    if (number > top1)
-    {
-        top3 = top2;
-        top2 = top1;
-        top1 = number;
-        printf("Top1: %i, Top2: %i, Top3: %i.\n", top1, top2, top3);
-    }
-    else if (number > top2)
-    {
-        top3 = top2;
-        top2 = number;
-        printf("Top1: %i, Top2: %i, Top3: %i.\n", top1, top2, top3);
-    }
-    else if (number > top3)
-    {
-        top3 = number;
-        printf("Top1: %i, Top2: %i, Top3: %i.\n", top1, top2, top3);
-    }
-}
-
 int main(int argc, char **args)
 {
     char *line = NULL;  /*malloc(10);*/
@@ -106,37 +80,34 @@ int main(int argc, char **args)
     FILE *f;
     int search = FINDING;
 
-    f = fopen("input.txt", "r");
+    f = fopen("../../inputs/day1/full.txt", "r");
     if (f == NULL)
     {
         exit(EXIT_FAILURE);
     }
+    int highest = 0;
     int total = 0;
-    while (1)
+    while ((read = getline(&line, &bufSize, f)) != -1)
     {
-        if ((read = getline(&line, &bufSize, f)) != -1)
+        printf("%i characters read. \n", read);
+        if (isdigit(line[0]))
         {
-            if (isdigit(line[0]))
-            {
-                total += atoi(line);
-                printf("After atoi: %i\n", atoi(line));
-            }
-            else
-            {
-                setHighestThree(total);
-                total = 0;
-            }
+            total += atoi(line);
+            printf("After atoi: %i\n", atoi(line));
         }
         else
         {
-            setHighestThree(total);
-            break;
+            total = 0;
         }
 
+        if (total > highest)
+        {
+            highest = total;
+        }
         printf("Line: %s\n", line);
         printf("Total: %i\n", total);
     }
-    printf("Highest: %i\n", top1 + top2 + top3);
+    printf("Highest: %i\n", highest);
     fclose(f);
     if (line)
     {
